@@ -137,7 +137,7 @@ public class HorizontalProgressWheelView extends View {
         mProgressLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mProgressLinePaint.setStyle(Paint.Style.STROKE);
         mProgressLinePaint.setStrokeWidth(mProgressLineWidth);
-        mProgressLinePaint.setColor(getResources().getColor(R.color.ucrop_color_progress_wheel_line));
+        mProgressLinePaint.setColor(getResources().getColor(R.color.colorInActive));
 
         mProgressMiddleLinePaint = new Paint(mProgressLinePaint);
         mProgressMiddleLinePaint.setColor(mMiddleLineColor);

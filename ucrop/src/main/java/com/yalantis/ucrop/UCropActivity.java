@@ -123,7 +123,7 @@ public class UCropActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.ucrop_activity_photobox);
+        setContentView(R.layout.ucrop_activity_photobox1);
 
         final Intent intent = getIntent();
 

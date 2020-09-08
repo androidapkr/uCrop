@@ -25,21 +25,22 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.yalantis.ucrop.UCrop;
-import com.yalantis.ucrop.UCropActivity;
-import com.yalantis.ucrop.UCropFragment;
-import com.yalantis.ucrop.UCropFragmentCallback;
-
-import java.io.File;
-import java.util.Locale;
-import java.util.Random;
-
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+
+import com.yalantis.ucrop.UCrop;
+import com.yalantis.ucrop.UCropActivity;
+import com.yalantis.ucrop.UCropActivity1;
+import com.yalantis.ucrop.UCropFragment;
+import com.yalantis.ucrop.UCropFragmentCallback;
+
+import java.io.File;
+import java.util.Locale;
+import java.util.Random;
 
 /**
  * Created by Oleksii Shliama (https://github.com/shliama).
@@ -62,7 +63,7 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
     private CheckBox mCheckBoxFreeStyleCrop;
     private Toolbar toolbar;
     private ScrollView settingsView;
-    private int requestMode = BuildConfig.RequestMode;
+    private int requestMode = 1;
 
     private UCropFragment fragment;
     private boolean mShowLoader;
@@ -81,11 +82,15 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sample);
+
+        startActivity(new Intent(SampleActivity.this, UCropActivity1.class));
+
         setupUI();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == requestMode) {
                 final Uri selectedUri = data.getData();
@@ -141,6 +146,12 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
 
     @SuppressWarnings("ConstantConditions")
     private void setupUI() {
+        findViewById(R.id.logo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SampleActivity.this, UCropActivity1.class));
+            }
+        });
         findViewById(R.id.button_crop).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

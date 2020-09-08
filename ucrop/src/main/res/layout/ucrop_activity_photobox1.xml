@@ -1,0 +1,92 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ucrop_photobox"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/windowBackground"
+    tools:context=".UCropActivity1">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/windowBackground"
+        app:elevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            app:title="@string/ucrop_crop"
+            app:titleTextColor="@color/colorActive" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.yalantis.ucrop.view.UCropView
+        android:id="@+id/ucrop"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:alpha="0"
+        app:layout_constraintBottom_toTopOf="@+id/materialButtonReset"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+
+    <com.yalantis.ucrop.view.widget.HorizontalProgressWheelView
+        android:id="@+id/rotateScrollWheel"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/materialButtonReset"
+        app:layout_constraintEnd_toStartOf="@+id/materialButton90Angle"
+        app:layout_constraintStart_toEndOf="@+id/materialButtonReset"
+        app:layout_constraintTop_toTopOf="@+id/materialButtonReset" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/materialButtonReset"
+        style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:icon="@drawable/ucrop_ic_reset"
+        app:iconTint="@color/colorInActive"
+        app:layout_constraintBottom_toTopOf="@id/recyclerViewSize"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/materialButton90Angle"
+        style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:icon="@drawable/ucrop_ic_angle"
+        app:iconTint="@color/colorInActive"
+        app:layout_constraintBottom_toBottomOf="@+id/materialButtonReset"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/materialButtonReset" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewSize"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:overScrollMode="never"
+        android:padding="4dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:listitem="@layout/child_crop_size" />
+</androidx.constraintlayout.widget.ConstraintLayout>

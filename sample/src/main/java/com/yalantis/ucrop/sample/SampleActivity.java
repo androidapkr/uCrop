@@ -32,6 +32,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
+import com.yalantis.ucrop.LayoutSizeActivity;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropActivity;
 import com.yalantis.ucrop.UCropActivity1;
@@ -83,7 +84,7 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sample);
 
-        startActivity(new Intent(SampleActivity.this, UCropActivity1.class));
+        startActivity(new Intent(SampleActivity.this, LayoutSizeActivity.class));
 
         setupUI();
     }

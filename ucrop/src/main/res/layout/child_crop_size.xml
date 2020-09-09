@@ -9,7 +9,7 @@
     <com.yalantis.ucrop.view.widget.AspectRatioImageView
         android:id="@+id/imageViewRatioChild"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="72dp"
         android:background="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

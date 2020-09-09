@@ -43,7 +43,11 @@
 
         <activity
             android:name="com.yalantis.ucrop.UCropActivity1"
-            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name="com.yalantis.ucrop.LayoutSizeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 

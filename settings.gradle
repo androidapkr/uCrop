@@ -1,2 +1,3 @@
+include ':lib_snappysmoothscroller'
 include ':lib_style'
 include ':ucrop', ':sample'

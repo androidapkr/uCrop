@@ -28,11 +28,6 @@ class SizeLayoutSnapOnScrollListener(
     }
 
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-            onSnapPositionChangeListener?.onSnapped()
-        } else {
-            onSnapPositionChangeListener?.onSnapping()
-        }
         if (behavior == Behavior.NOTIFY_ON_SCROLL_STATE_IDLE && newState == RecyclerView.SCROLL_STATE_IDLE) {
             maybeNotifySnapPositionChange(recyclerView)
         }

@@ -11,8 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
+import com.google.android.material.card.MaterialCardView
 import com.yalantis.ucrop.adapter.LayoutSizeAdapter
-import com.yalantis.ucrop.callback.*
+import com.yalantis.ucrop.callback.OnSnapPositionChangeListener
+import com.yalantis.ucrop.callback.SizeLayoutSnapOnScrollListener
+import com.yalantis.ucrop.callback.attachSizeLayoutSnapHelperWithListener
 import com.yalantis.ucrop.util.PREFIX_X
 import com.yalantis.ucrop.util.getCenterSnapHorizontalLayoutManager
 import com.yalantis.ucrop.util.resizeInRangeOf
@@ -59,31 +62,10 @@ class LayoutSizeActivity : AppCompatActivity(), LayoutSizeAdapter.OnLayoutSizeLi
         recyclerViewSize.setItemViewCacheSize(layoutSizeAdapter.size)
 
         recyclerViewSize.attachSizeLayoutSnapHelperWithListener(snapHelper, SizeLayoutSnapOnScrollListener.Behavior.NOTIFY_ON_SCROLL, object : OnSnapPositionChangeListener {
-            override fun onSnapping() {
-            }
-
-            override fun onSnapped() {
-                if (!isManualScroll) {
-                    layoutSizePosition = snapHelper.getSnapPosition(recyclerViewSize)
-                    if (layoutSizePosition >= 0) {
-                        recyclerViewSize.post {
-                            layoutSizeAdapter.setSelected(layoutSizePosition)
-                        }
-                    }
-                    animateSizeSnapLayout(snapHelper.getSnapView(recyclerViewSize), layoutSizeAdapter.list[layoutSizePosition].split(PREFIX_X))
-                }
-                isManualScroll = true
-            }
-
             @SuppressLint("SetTextI18n")
             override fun onSnapPositionChange(position: Int, view: View?) {
-                if (isManualScroll && recyclerViewSize.adapter != null) {
-                    layoutSizePosition = position
-                    val array = layoutSizeAdapter.list[position].split(PREFIX_X)
-                    buttonSize.text = array[0] + PREFIX_X + array[1]
-                    aspectRatio = array[0].toFloat() / array[1].toFloat()
-                    isPortrait = true
-                    animateSizeSnapLayout(view, array)
+                view?.let {
+                    (it as MaterialCardView).strokeWidth = 2.toPx()
                 }
             }
         })
@@ -129,22 +111,18 @@ class LayoutSizeActivity : AppCompatActivity(), LayoutSizeAdapter.OnLayoutSizeLi
         layoutSizePosition = position
         recyclerViewSize.smoothScrollToPosition(position)
 
-        recyclerViewSize.post {
+        recyclerViewSize.postDelayed({
             layoutSizeAdapter.setSelected(layoutSizePosition)
-        }
+        }, 300)
     }
 
-    lateinit var menu: Menu
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.ucrop_menu_activity, menu)
-        this.menu = menu
-
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) onBackPressed()
-
         return true
     }
 }

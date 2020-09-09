@@ -7,6 +7,41 @@
     android:layout_height="match_parent"
     android:background="@color/windowBackground">
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/materialButtonReset2"
+        style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        app:icon="@drawable/ucrop_ic_reset"
+        app:iconTint="@color/colorInActive"
+        app:layout_constraintBottom_toTopOf="@id/recyclerViewSize"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="8dp" />
+
+    <com.yalantis.ucrop.view.widget.HorizontalProgressWheelView
+        android:id="@+id/rotateScrollWheel2"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        app:layout_constraintBottom_toBottomOf="@+id/materialButtonReset2"
+        app:layout_constraintEnd_toStartOf="@+id/materialButton90Angle2"
+        app:layout_constraintStart_toEndOf="@+id/materialButtonReset2"
+        app:layout_constraintTop_toTopOf="@+id/materialButtonReset2" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/materialButton90Angle2"
+        style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:icon="@drawable/ucrop_ic_angle"
+        app:iconTint="@color/colorInActive"
+        app:layout_constraintBottom_toBottomOf="@+id/materialButtonReset2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/materialButtonReset2" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
@@ -79,10 +114,11 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="@dimen/dp16"
+        android:visibility="visible"
         app:cardBackgroundColor="@color/windowBackgroundSurface"
         app:cardCornerRadius="0dp"
         app:cornerRadius="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerViewSize"
+        app:layout_constraintBottom_toTopOf="@+id/materialButtonReset2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/app_bar_layout"

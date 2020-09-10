@@ -530,8 +530,7 @@ public class OverlayView extends View {
     @SuppressWarnings("deprecation")
     protected void processStyledAttributes(@NonNull TypedArray a) {
         mCircleDimmedLayer = a.getBoolean(R.styleable.ucrop_UCropView_ucrop_circle_dimmed_layer, DEFAULT_CIRCLE_DIMMED_LAYER);
-        mDimmedColor = a.getColor(R.styleable.ucrop_UCropView_ucrop_dimmed_color,
-                getResources().getColor(R.color.ucrop_color_default_dimmed));
+        mDimmedColor = a.getColor(R.styleable.ucrop_UCropView_ucrop_dimmed_color, getResources().getColor(R.color.ucrop_color_default_dimmed));
         mDimmedStrokePaint.setColor(mDimmedColor);
         mDimmedStrokePaint.setStyle(Paint.Style.STROKE);
         mDimmedStrokePaint.setStrokeWidth(1);

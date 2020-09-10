@@ -3,10 +3,6 @@ package com.yalantis.ucrop.callback
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
-import com.google.android.material.card.MaterialCardView
-import com.yalantis.ucrop.callback.OnSnapPositionChangeListener
-import com.yalantis.ucrop.callback.getSnapPosition
-import com.yalantis.ucrop.util.toPx
 
 class SizeLayoutSnapOnScrollListener(
         private val snapHelper: SnapHelper,
@@ -31,17 +27,21 @@ class SizeLayoutSnapOnScrollListener(
         if (behavior == Behavior.NOTIFY_ON_SCROLL_STATE_IDLE && newState == RecyclerView.SCROLL_STATE_IDLE) {
             maybeNotifySnapPositionChange(recyclerView)
         }
+
+        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+            onSnapPositionChangeListener?.onSnapped(this.snapPosition)
+        }
     }
 
     private fun maybeNotifySnapPositionChange(recyclerView: RecyclerView) {
-        for (i in 0 until recyclerView.childCount) (recyclerView.getChildAt(i) as MaterialCardView).strokeWidth = 0
+//        for (i in 0 until recyclerView.childCount) (recyclerView.getChildAt(i) as MaterialCardView).strokeWidth = 0
 
         val snapPosition = snapHelper.getSnapPosition(recyclerView)
         val snapPositionChanged = this.snapPosition != snapPosition
         if (snapPositionChanged) {
             val view: View? = snapHelper.getCenterSnapView(recyclerView)
-            if (view != null) (view as MaterialCardView).strokeWidth = 2.toPx()
-            onSnapPositionChangeListener?.onSnapPositionChange(snapPosition, view!!)
+//            if (view != null) (view as MaterialCardView).strokeWidth = 2.toPx()
+            onSnapPositionChangeListener?.onSnapPositionChange(snapPosition, view)
             this.snapPosition = snapPosition
         }
     }

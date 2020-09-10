@@ -32,16 +32,16 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
-import com.yalantis.ucrop.LayoutSizeActivity;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropActivity;
-import com.yalantis.ucrop.UCropActivity1;
 import com.yalantis.ucrop.UCropFragment;
 import com.yalantis.ucrop.UCropFragmentCallback;
 
 import java.io.File;
 import java.util.Locale;
 import java.util.Random;
+
+import static com.yalantis.ucrop.util.AppExKt.getResColor;
 
 /**
  * Created by Oleksii Shliama (https://github.com/shliama).
@@ -84,7 +84,7 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sample);
 
-        startActivity(new Intent(SampleActivity.this, LayoutSizeActivity.class));
+//        startActivity(new Intent(SampleActivity.this, LayoutSizeActivity.class));
 
         setupUI();
     }
@@ -150,7 +150,7 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
         findViewById(R.id.logo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(SampleActivity.this, UCropActivity1.class));
+//                startActivity(new Intent(SampleActivity.this, UCropActivity1.class));
             }
         });
         findViewById(R.id.button_crop).setOnClickListener(new View.OnClickListener() {
@@ -323,6 +323,17 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
         options.setHideBottomControls(mCheckBoxHideBottomControls.isChecked());
         options.setFreeStyleCropEnabled(mCheckBoxFreeStyleCrop.isChecked());
 
+        options.setAspectRatioDefault(0f);
+
+        // Theme
+
+        options.setActiveControlsWidgetColor(getResColor(this, R.color.colorActive));
+        options.setInActiveControlsWidgetColor(getResColor(this, R.color.colorInActive));
+        options.setRootViewBackgroundColor(getResColor(this, R.color.windowBackground));
+        options.setRootViewBackgroundSurfaceColor(getResColor(this, R.color.windowBackgroundSurface));
+        options.setDimmedLayerColor(getResColor(this, R.color.windowBackgroundOverlay));
+
+
         /*
         If you want to configure how gestures work for all UCropActivity tabs
 
@@ -421,12 +432,12 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
     }
 
     public void setupFragment(UCrop uCrop) {
-        fragment = uCrop.getFragment(uCrop.getIntent(this).getExtras());
+        fragment = uCrop.getFragment(uCrop.getIntentSize(this).getExtras());
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, fragment, UCropFragment.TAG)
                 .commitAllowingStateLoss();
 
-        setupViews(uCrop.getIntent(this).getExtras());
+        setupViews(uCrop.getIntentSize(this).getExtras());
     }
 
     public void setupViews(Bundle args) {

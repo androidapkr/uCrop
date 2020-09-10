@@ -9,6 +9,8 @@
     <color name="windowBackground">@color/colorPrimary</color>
     <color name="windowBackgroundSurface">@color/colorPrimaryLight</color>
 
+    <color name="windowBackgroundOverlay">#8C212121</color>
+
     <color name="colorActive">@color/colorAccent</color>
     <color name="colorInActive">@color/silver</color>
 

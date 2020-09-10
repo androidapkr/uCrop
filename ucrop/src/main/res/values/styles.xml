@@ -42,6 +42,7 @@
         <item name="android:textColor">@color/ucrop_color_widget_text</item>
         <item name="android:layout_marginTop">@dimen/ucrop_margin_top_widget_text</item>
         <item name="android:textSize">@dimen/ucrop_text_size_widget_text</item>
+        <item name="android:includeFontPadding">false</item>
     </style>
 
     <style name="ucrop_TextViewWidget">

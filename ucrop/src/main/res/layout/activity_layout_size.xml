@@ -13,17 +13,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginBottom="8dp"
         app:icon="@drawable/ucrop_ic_reset"
         app:iconTint="@color/colorInActive"
         app:layout_constraintBottom_toTopOf="@id/recyclerViewSize"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginLeft="8dp" />
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textViewRotate"
+        style="@style/ucrop_TextViewWidgetText"
+        app:layout_constraintBottom_toTopOf="@+id/rotateScrollWheel2"
+        app:layout_constraintEnd_toEndOf="@+id/rotateScrollWheel2"
+        app:layout_constraintStart_toEndOf="@+id/materialButtonReset2"
+        tools:text="100°" />
 
     <com.yalantis.ucrop.view.widget.HorizontalProgressWheelView
         android:id="@+id/rotateScrollWheel2"
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="35dp"
         app:layout_constraintBottom_toBottomOf="@+id/materialButtonReset2"
         app:layout_constraintEnd_toStartOf="@+id/materialButton90Angle2"
         app:layout_constraintStart_toEndOf="@+id/materialButtonReset2"
@@ -51,7 +59,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/appCompatImageView2"
+            android:id="@+id/imageViewClose"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
@@ -62,7 +70,7 @@
             app:srcCompat="@drawable/ucrop_ic_cross" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/appCompatImageView"
+            android:id="@+id/imageViewCrop"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
@@ -71,23 +79,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ucrop_ic_done"
-            app:tint="@color/colorActive" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/image_view_rotate_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/dp4"
-            android:layout_marginRight="@dimen/dp4"
-            android:adjustViewBounds="true"
-            android:clickable="true"
-            android:focusable="true"
-            android:scaleType="center"
-            android:tint="@color/colorActive"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/appCompatImageView"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ucrop_rotate"
             app:tint="@color/colorActive" />
 
         <com.google.android.material.button.MaterialButton
@@ -102,30 +93,35 @@
             android:textColor="@color/colorActive"
             app:cornerRadius="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/image_view_rotate_layout"
-            app:layout_constraintStart_toEndOf="@+id/appCompatImageView2"
+            app:layout_constraintEnd_toStartOf="@+id/imageViewCrop"
+            app:layout_constraintStart_toEndOf="@+id/imageViewClose"
             app:layout_constraintTop_toTopOf="parent"
             app:rippleColor="@color/colorAccent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_view_frame"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageViewPlaceholder"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="@dimen/dp16"
-        android:visibility="visible"
-        app:cardBackgroundColor="@color/windowBackgroundSurface"
-        app:cardCornerRadius="0dp"
-        app:cornerRadius="0dp"
+        android:alpha="0.05"
         app:layout_constraintBottom_toTopOf="@+id/materialButtonReset2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/app_bar_layout"
-        app:strokeColor="@color/colorInActive"
-        app:strokeWidth="1dp">
+        app:srcCompat="@drawable/ucrop_crop" />
 
-    </com.google.android.material.card.MaterialCardView>
+    <com.yalantis.ucrop.view.UCropView
+        android:id="@+id/mCropView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/dp16"
+        android:alpha="0"
+        app:layout_constraintBottom_toTopOf="@+id/materialButtonReset2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewSize"

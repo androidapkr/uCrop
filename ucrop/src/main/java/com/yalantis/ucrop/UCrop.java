@@ -136,7 +136,7 @@ public class UCrop {
      * @param requestCode requestCode for result
      */
     public void start(@NonNull Activity activity, int requestCode) {
-        activity.startActivityForResult(getIntent(activity), requestCode);
+        activity.startActivityForResult(getIntentSize(activity), requestCode);
     }
 
     /**
@@ -165,7 +165,7 @@ public class UCrop {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void start(@NonNull Context context, @NonNull Fragment fragment, int requestCode) {
-        fragment.startActivityForResult(getIntent(context), requestCode);
+        fragment.startActivityForResult(getIntentSize(context), requestCode);
     }
 
     /**
@@ -175,7 +175,7 @@ public class UCrop {
      * @param requestCode requestCode for result
      */
     public void start(@NonNull Context context, @NonNull androidx.fragment.app.Fragment fragment, int requestCode) {
-        fragment.startActivityForResult(getIntent(context), requestCode);
+        fragment.startActivityForResult(getIntentSize(context), requestCode);
     }
 
     /**
@@ -185,6 +185,12 @@ public class UCrop {
      */
     public Intent getIntent(@NonNull Context context) {
         mCropIntent.setClass(context, UCropActivity.class);
+        mCropIntent.putExtras(mCropOptionsBundle);
+        return mCropIntent;
+    }
+
+    public Intent getIntentSize(@NonNull Context context) {
+        mCropIntent.setClass(context, LayoutSizeActivity.class);
         mCropIntent.putExtras(mCropOptionsBundle);
         return mCropIntent;
     }
@@ -285,6 +291,7 @@ public class UCrop {
         public static final String EXTRA_TOOL_BAR_COLOR = EXTRA_PREFIX + ".ToolbarColor";
         public static final String EXTRA_STATUS_BAR_COLOR = EXTRA_PREFIX + ".StatusBarColor";
         public static final String EXTRA_UCROP_COLOR_CONTROLS_WIDGET_ACTIVE = EXTRA_PREFIX + ".UcropColorControlsWidgetActive";
+        public static final String EXTRA_UCROP_COLOR_CONTROLS_WIDGET_INACTIVE = EXTRA_PREFIX + ".UcropColorControlsWidgetInActive";
 
         public static final String EXTRA_UCROP_WIDGET_COLOR_TOOLBAR = EXTRA_PREFIX + ".UcropToolbarWidgetColor";
         public static final String EXTRA_UCROP_TITLE_TEXT_TOOLBAR = EXTRA_PREFIX + ".UcropToolbarTitleText";
@@ -300,6 +307,7 @@ public class UCrop {
         public static final String EXTRA_ASPECT_RATIO_OPTIONS = EXTRA_PREFIX + ".AspectRatioOptions";
 
         public static final String EXTRA_UCROP_ROOT_VIEW_BACKGROUND_COLOR = EXTRA_PREFIX + ".UcropRootViewBackgroundColor";
+        public static final String EXTRA_UCROP_ROOT_VIEW_BACKGROUND_SURFACE_COLOR = EXTRA_PREFIX + ".UcropRootViewBackgroundSurfaceColor";
 
 
         private final Bundle mOptionBundle;
@@ -462,6 +470,13 @@ public class UCrop {
         }
 
         /**
+         * @param color - desired resolved color of the active and selected widget and progress wheel middle line (default is white)
+         */
+        public void setInActiveControlsWidgetColor(@ColorInt int color) {
+            mOptionBundle.putInt(EXTRA_UCROP_COLOR_CONTROLS_WIDGET_INACTIVE, color);
+        }
+
+        /**
          * @param color - desired resolved color of Toolbar text and buttons (default is darker orange)
          */
         public void setToolbarWidgetColor(@ColorInt int color) {
@@ -526,11 +541,19 @@ public class UCrop {
             mOptionBundle.putParcelableArrayList(EXTRA_ASPECT_RATIO_OPTIONS, new ArrayList<Parcelable>(Arrays.asList(aspectRatio)));
         }
 
+        public void setAspectRatioDefault(float ratio) {
+            mOptionBundle.putFloat(EXTRA_ASPECT_RATIO_SELECTED_BY_DEFAULT, ratio);
+        }
+
         /**
          * @param color - desired background color that should be applied to the root view
          */
         public void setRootViewBackgroundColor(@ColorInt int color) {
             mOptionBundle.putInt(EXTRA_UCROP_ROOT_VIEW_BACKGROUND_COLOR, color);
+        }
+
+        public void setRootViewBackgroundSurfaceColor(@ColorInt int color) {
+            mOptionBundle.putInt(EXTRA_UCROP_ROOT_VIEW_BACKGROUND_SURFACE_COLOR, color);
         }
 
         /**

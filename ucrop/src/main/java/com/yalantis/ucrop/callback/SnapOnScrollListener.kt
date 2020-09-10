@@ -15,7 +15,7 @@ fun SnapHelper.getSnapView(recyclerView: RecyclerView): View? {
     return findSnapView(layoutManager) ?: return null
 }
 
-
 interface OnSnapPositionChangeListener {
     fun onSnapPositionChange(position: Int, view: View?)
+    fun onSnapped(snapPosition: Int)
 }

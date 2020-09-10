@@ -1,9 +1,11 @@
 package com.yalantis.ucrop.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.yalantis.ucrop.R
+import com.yalantis.ucrop.util.PREFIX_X
 import com.yalantis.ucrop.util.resizeInRangeOf
 import com.yalantis.ucrop.util.toPx
 import kotlinx.android.synthetic.main.layout_size_child.view.*
@@ -11,6 +13,7 @@ import kotlinx.android.synthetic.main.layout_size_child.view.*
 internal class LayoutSizeAdapter(val listener: OnLayoutSizeListener?) : RecyclerView.Adapter<ItemHolder>() {
 
     val list = mutableListOf(
+            "2048 x 2048 x Free x Free",
             "2048 x 2048 x Square x 1:1",
             "1242 x 2208 x Smartphone x phone",
             "1080 x 1080 x Square x instagram",
@@ -38,7 +41,6 @@ internal class LayoutSizeAdapter(val listener: OnLayoutSizeListener?) : Recycler
             "900 x 1800 x Half Page x google",
             "1280 x 400 x Large Mobile Banner x google"
     )
-    // "2560 x 1440 x Video x youtube",
 
     val size = 100.toPx()
     val size80 = 80.toPx()
@@ -66,6 +68,7 @@ internal class LayoutSizeAdapter(val listener: OnLayoutSizeListener?) : Recycler
     }
 
     fun setSelected(position: Int) {
+        if(position == RecyclerView.NO_POSITION) return
         val old: Int = selectedItemPosition
         selectedItemPosition = -1
         notifyItemChanged(old)
@@ -79,7 +82,7 @@ internal class LayoutSizeAdapter(val listener: OnLayoutSizeListener?) : Recycler
     }
 
     interface OnLayoutSizeListener {
-        fun onLayoutSizeSelected(position: Int, width: Int, height: Int)
+        fun onLayoutSizeSelected(position: Int, width: Int, height: Int, view: View?)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ItemHolder {
@@ -88,10 +91,15 @@ internal class LayoutSizeAdapter(val listener: OnLayoutSizeListener?) : Recycler
 
     override fun onBindViewHolder(holder: ItemHolder, position: Int) {
         holder.itemView.card_view.strokeWidth = if (position == selectedItemPosition) 2.toPx() else 0
+//        holder.itemView.card_view.strokeWidth = 0
 
-        val array = list[position].split(" x ")
+        val array = list[position].split(PREFIX_X)
 
         when (array[3]) {
+            "Free" -> {
+                holder.itemView.image_view.setImageResource(R.drawable.svg_free_crop)
+                holder.itemView.text_view.text = ""
+            }
             "phone" -> {
                 holder.itemView.image_view.setImageResource(R.drawable.svg_cellphone)
                 holder.itemView.text_view.text = ""
@@ -160,7 +168,7 @@ internal class LayoutSizeAdapter(val listener: OnLayoutSizeListener?) : Recycler
         param.bottomMargin = marginBottom
 
         holder.itemView.setOnClickListener {
-            listener!!.onLayoutSizeSelected(position, array[0].toInt(), array[1].toInt())
+            listener!!.onLayoutSizeSelected(position, array[0].toInt(), array[1].toInt(), holder.itemView)
         }
     }
 

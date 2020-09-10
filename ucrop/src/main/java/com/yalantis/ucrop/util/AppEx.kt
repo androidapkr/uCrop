@@ -1,17 +1,20 @@
 package com.yalantis.ucrop.util
 
+import android.content.Context
 import android.content.res.Resources
 import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.textfield.TextInputEditText
 import com.nshmura.snappysmoothscroller.SnapType
 import com.nshmura.snappysmoothscroller.SnappyLinearLayoutManager
 
-const val EXTRA_WIDTH = "__width__"
-const val EXTRA_HEIGHT = "__height__"
-const val PREFIX_X = "x"
-const val ACTIVITY_LAYOUT_SIZE_SELECT = 1001
+const val PREFIX_X = " x "
+
+fun Context.getResColor(color: Int): Int = ContextCompat.getColor(this, color)
+
+fun AppCompatActivity.getResColor(color: Int): Int = ContextCompat.getColor(this, color)
 
 fun Int.toPx(): Int = (this * Resources.getSystem().displayMetrics.density).toInt()
 

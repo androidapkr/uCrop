@@ -22,6 +22,8 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 
+import org.jetbrains.annotations.NotNull;
+
 public class FastBitmapDrawable extends Drawable {
 
     private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
@@ -36,7 +38,7 @@ public class FastBitmapDrawable extends Drawable {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(@NotNull Canvas canvas) {
         if (mBitmap != null && !mBitmap.isRecycled()) {
             canvas.drawBitmap(mBitmap, null, getBounds(), mPaint);
         }

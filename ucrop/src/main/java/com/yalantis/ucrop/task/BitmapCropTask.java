@@ -7,6 +7,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.exifinterface.media.ExifInterface;
+
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.model.CropParameters;
 import com.yalantis.ucrop.model.ExifInfo;
@@ -16,10 +20,6 @@ import com.yalantis.ucrop.util.ImageHeaderParser;
 
 import java.io.File;
 import java.io.IOException;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.exifinterface.media.ExifInterface;
 
 /**
  * Crops part of image that fills the crop bounds.
@@ -193,4 +193,11 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
         }
     }
 
+    @Override
+    protected void onCancelled() {
+        super.onCancelled();
+        if (mCropCallback != null) {
+            mCropCallback.onCropCancelled();
+        }
+    }
 }

@@ -10,4 +10,6 @@ public interface BitmapCropCallback {
 
     void onCropFailure(@NonNull Throwable t);
 
+    void onCropCancelled();
+
 }

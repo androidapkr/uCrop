@@ -674,6 +674,11 @@ public class UCropActivity extends AppCompatActivity {
             }
 
             @Override
+            public void onCropCancelled() {
+
+            }
+
+            @Override
             public void onCropFailure(@NonNull Throwable t) {
                 setResultError(t);
                 finish();

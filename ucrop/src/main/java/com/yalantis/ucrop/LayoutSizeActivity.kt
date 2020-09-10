@@ -9,8 +9,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.widget.FrameLayout
@@ -24,6 +22,7 @@ import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.callback.OnSnapPositionChangeListener
 import com.yalantis.ucrop.callback.SizeLayoutSnapOnScrollListener
 import com.yalantis.ucrop.callback.attachSizeLayoutSnapHelperWithListener
+import com.yalantis.ucrop.util.BitmapLoadUtils.calculateMaxBitmapSize
 import com.yalantis.ucrop.util.PREFIX_X
 import com.yalantis.ucrop.util.getCenterSnapHorizontalLayoutManager
 import com.yalantis.ucrop.util.getResColor
@@ -35,7 +34,7 @@ import com.yalantis.ucrop.view.TransformImageView
 import com.yalantis.ucrop.view.widget.HorizontalProgressWheelView
 import kotlinx.android.synthetic.main.activity_layout_size.*
 import java.util.*
-import kotlin.math.max
+import kotlin.math.min
 import android.view.ViewTreeObserver.OnGlobalLayoutListener as OnGlobalLayoutListener1
 
 open class LayoutSizeActivity : AppCompatActivity(), LayoutSizeAdapter.OnLayoutSizeListener {
@@ -43,10 +42,10 @@ open class LayoutSizeActivity : AppCompatActivity(), LayoutSizeAdapter.OnLayoutS
     private var viewWidth = 0
     private var viewHeight = 0
     private var oldView: View? = null
+    private var isSaving = false
 
-    private val DEFAULT_COMPRESS_QUALITY = 90
+    private val DEFAULT_COMPRESS_QUALITY = 100
     private val DEFAULT_COMPRESS_FORMAT = Bitmap.CompressFormat.JPEG
-
     private val ROTATE_WIDGET_SENSITIVITY_COEFFICIENT = 42
 
     private var mActiveControlsWidgetColor: Int = 0
@@ -103,7 +102,6 @@ open class LayoutSizeActivity : AppCompatActivity(), LayoutSizeAdapter.OnLayoutS
                     mOverlayView.freestyleCropMode = OverlayView.FREESTYLE_CROP_MODE_DISABLE
                     mGestureCropImageView.targetAspectRatio = item[0].toFloat() / item[1].toFloat()
                 }
-                mGestureCropImageView.maxBitmapSize = max(item[0].toFloat(), item[1].toFloat()).toInt()
                 mGestureCropImageView.setImageToWrapCropBounds()
             }
 
@@ -120,7 +118,7 @@ open class LayoutSizeActivity : AppCompatActivity(), LayoutSizeAdapter.OnLayoutS
 
         mGestureCropImageView.setTransformImageListener(mImageListener)
 
-        imageViewClose.setOnClickListener { onBackPressed() }
+        imageViewClose.setOnClickListener { stopProcessWithExit() }
         imageViewCrop.setOnClickListener { cropAndSaveImage() }
 
         setImageData(intent)
@@ -191,7 +189,10 @@ open class LayoutSizeActivity : AppCompatActivity(), LayoutSizeAdapter.OnLayoutS
         mCompressQuality = intent.getIntExtra(UCrop.Options.EXTRA_COMPRESSION_QUALITY, DEFAULT_COMPRESS_QUALITY)
 
         // Crop image view options
-        mGestureCropImageView.maxBitmapSize = intent.getIntExtra(UCrop.Options.EXTRA_MAX_BITMAP_SIZE, CropImageView.DEFAULT_MAX_BITMAP_SIZE)
+        mGestureCropImageView.maxBitmapSize = intent.getIntExtra(UCrop.Options.EXTRA_MAX_BITMAP_SIZE, calculateMaxBitmapSize(applicationContext))
+
+        mGestureCropImageView.maxBitmapSize = min(mGestureCropImageView.maxBitmapSize, calculateMaxBitmapSize(applicationContext))
+
         mGestureCropImageView.setMaxScaleMultiplier(intent.getFloatExtra(UCrop.Options.EXTRA_MAX_SCALE_MULTIPLIER, CropImageView.DEFAULT_MAX_SCALE_MULTIPLIER))
         mGestureCropImageView.setImageToWrapCropBoundsAnimDuration(intent.getIntExtra(UCrop.Options.EXTRA_IMAGE_TO_CROP_BOUNDS_ANIM_DURATION, CropImageView.DEFAULT_IMAGE_TO_CROP_BOUNDS_ANIM_DURATION).toLong())
 
@@ -254,7 +255,7 @@ open class LayoutSizeActivity : AppCompatActivity(), LayoutSizeAdapter.OnLayoutS
             mBlockingView?.let {
                 val lp = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT)
                 lp.startToStart = container.id
-                lp.topToTop = container.id
+                lp.topToBottom = app_bar_layout.id
                 lp.endToEnd = container.id
                 lp.bottomToBottom = container.id
                 it.layoutParams = lp
@@ -279,19 +280,29 @@ open class LayoutSizeActivity : AppCompatActivity(), LayoutSizeAdapter.OnLayoutS
     }
 
     private fun cropAndSaveImage() {
+        if (isSaving) return
+        isSaving = true
         mBlockingView?.isClickable = true
-        mBlockingView?.let {
-            it.isClickable = false
-        }
         animateSaveIcon()
         mGestureCropImageView.cropAndSaveImage(mCompressFormat, mCompressQuality, object : BitmapCropCallback {
 
             override fun onBitmapCropped(resultUri: Uri, offsetX: Int, offsetY: Int, imageWidth: Int, imageHeight: Int) {
-                setResultUri(resultUri, mGestureCropImageView.getTargetAspectRatio(), offsetX, offsetY, imageWidth, imageHeight)
+                mBlockingView?.isClickable = false
+                isSaving = false
+                setResultUri(resultUri, mGestureCropImageView.targetAspectRatio, offsetX, offsetY, imageWidth, imageHeight)
+                finish()
+            }
+
+            override fun onCropCancelled() {
+                mBlockingView?.isClickable = false
+                isSaving = false
+                setResultError(Exception("Operation Cancelled by user."))
                 finish()
             }
 
             override fun onCropFailure(t: Throwable) {
+                mBlockingView?.isClickable = false
+                isSaving = false
                 setResultError(t)
                 finish()
             }
@@ -313,6 +324,12 @@ open class LayoutSizeActivity : AppCompatActivity(), LayoutSizeAdapter.OnLayoutS
         setResult(UCrop.RESULT_ERROR, Intent().putExtra(UCrop.EXTRA_ERROR, throwable))
     }
 
+    private fun stopProcessWithExit() {
+        if (!mGestureCropImageView.cancelCurrentTask()) {
+            onBackPressed()
+        }
+    }
+
     private fun setAngleText(angle: Float) {
         if (textViewRotate != null) {
             textViewRotate.text = String.format(Locale.getDefault(), "%.1f°", angle)
@@ -328,18 +345,14 @@ open class LayoutSizeActivity : AppCompatActivity(), LayoutSizeAdapter.OnLayoutS
         recyclerViewSize.smoothScrollToPosition(position)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.ucrop_menu_activity, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) onBackPressed()
-        return true
-    }
-
     override fun onStop() {
         super.onStop()
-        if (mGestureCropImageView != null) mGestureCropImageView.cancelAllAnimations()
+        mGestureCropImageView.cancelAllAnimations()
+    }
+
+    override fun onDestroy() {
+        container.removeAllViews()
+        Runtime.getRuntime().gc()
+        super.onDestroy()
     }
 }

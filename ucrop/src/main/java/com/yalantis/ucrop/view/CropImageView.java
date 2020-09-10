@@ -9,6 +9,10 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.AttributeSet;
 
+import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.callback.CropBoundsChangeListener;
@@ -20,10 +24,6 @@ import com.yalantis.ucrop.util.RectUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
-
-import androidx.annotation.IntRange;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * Created by Oleksii Shliama (https://github.com/shliama).
@@ -53,6 +53,8 @@ public class CropImageView extends TransformImageView {
     private float mMaxScale, mMinScale;
     private int mMaxResultImageSizeX = 0, mMaxResultImageSizeY = 0;
     private long mImageToWrapCropBoundsAnimDuration = DEFAULT_IMAGE_TO_CROP_BOUNDS_ANIM_DURATION;
+
+    private BitmapCropTask bitmapCropTask;
 
     public CropImageView(Context context) {
         this(context, null);
@@ -84,8 +86,20 @@ public class CropImageView extends TransformImageView {
                 compressFormat, compressQuality,
                 getImageInputPath(), getImageOutputPath(), getExifInfo());
 
-        new BitmapCropTask(getViewBitmap(), imageState, cropParameters, cropCallback)
-                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        if (bitmapCropTask != null && bitmapCropTask.getStatus() == AsyncTask.Status.RUNNING) {
+            bitmapCropTask.cancel(true);
+        }
+        bitmapCropTask = new BitmapCropTask(getViewBitmap(), imageState, cropParameters, cropCallback);
+        bitmapCropTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    public boolean cancelCurrentTask() {
+        if (bitmapCropTask != null && bitmapCropTask.getStatus() == AsyncTask.Status.RUNNING) {
+            bitmapCropTask.cancel(true);
+            return true;
+        }
+        return false;
     }
 
     /**

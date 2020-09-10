@@ -178,35 +178,12 @@ public class UCrop {
         fragment.startActivityForResult(getIntentSize(context), requestCode);
     }
 
-    /**
-     * Get Intent to start {@link UCropActivity}
-     *
-     * @return Intent for {@link UCropActivity}
-     */
-    public Intent getIntent(@NonNull Context context) {
-        mCropIntent.setClass(context, UCropActivity.class);
-        mCropIntent.putExtras(mCropOptionsBundle);
-        return mCropIntent;
-    }
+
 
     public Intent getIntentSize(@NonNull Context context) {
         mCropIntent.setClass(context, LayoutSizeActivity.class);
         mCropIntent.putExtras(mCropOptionsBundle);
         return mCropIntent;
-    }
-
-    /**
-     * Get Fragment {@link UCropFragment}
-     *
-     * @return Fragment of {@link UCropFragment}
-     */
-    public UCropFragment getFragment() {
-        return UCropFragment.newInstance(mCropOptionsBundle);
-    }
-
-    public UCropFragment getFragment(Bundle bundle) {
-        mCropOptionsBundle = bundle;
-        return getFragment();
     }
 
     /**
@@ -333,15 +310,6 @@ public class UCrop {
          */
         public void setCompressionQuality(@IntRange(from = 0) int compressQuality) {
             mOptionBundle.putInt(EXTRA_COMPRESSION_QUALITY, compressQuality);
-        }
-
-        /**
-         * Choose what set of gestures will be enabled on each tab - if any.
-         */
-        public void setAllowedGestures(@UCropActivity.GestureTypes int tabScale,
-                                       @UCropActivity.GestureTypes int tabRotate,
-                                       @UCropActivity.GestureTypes int tabAspectRatio) {
-            mOptionBundle.putIntArray(EXTRA_ALLOWED_GESTURES, new int[]{tabScale, tabRotate, tabAspectRatio});
         }
 
         /**

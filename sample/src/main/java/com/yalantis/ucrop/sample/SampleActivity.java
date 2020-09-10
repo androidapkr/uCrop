@@ -13,8 +13,6 @@ import androidx.annotation.NonNull;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
-import java.util.Locale;
-import java.util.Random;
 
 import static com.yalantis.ucrop.util.AppExKt.getResColor;
 
@@ -56,16 +54,8 @@ public class SampleActivity extends BaseActivity {
         }
     }
 
-
     private void setupUI() {
         findViewById(R.id.button_crop).setOnClickListener(v -> pickFromGallery());
-        findViewById(R.id.button_random_image).setOnClickListener(v -> {
-            Random random = new Random();
-            int minSizePixels = 4000;
-            int maxSizePixels = 8000;
-            Uri uri = Uri.parse(String.format(Locale.getDefault(), "https://unsplash.it/%d/%d/?random", minSizePixels + random.nextInt(maxSizePixels - minSizePixels), minSizePixels + random.nextInt(maxSizePixels - minSizePixels)));
-            startCrop(uri);
-        });
     }
 
     private void pickFromGallery() {

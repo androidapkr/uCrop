@@ -37,16 +37,6 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.yalantis.ucrop.UCropActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
-        <activity
-            android:name="com.yalantis.ucrop.UCropActivity1"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
-
-        <activity
             android:name="com.yalantis.ucrop.LayoutSizeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />

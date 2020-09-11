@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -104,10 +103,8 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
                 if (checkSize(decodeSampledBitmap, options)) continue;
                 decodeAttemptSuccess = true;
             } catch (OutOfMemoryError error) {
-                Log.e(TAG, "doInBackground: BitmapFactory.decodeFileDescriptor: ", error);
                 options.inSampleSize *= 2;
             } catch (IOException e) {
-                Log.e(TAG, "doInBackground: ImageDecoder.createSource: ", e);
                 return new BitmapWorkerResult(new IllegalArgumentException("Bitmap could not be decoded from the Uri: [" + mInputUri + "]", e));
             }
         }
@@ -138,23 +135,18 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
 
     private void processInputUri() throws NullPointerException, IOException {
         String inputUriScheme = mInputUri.getScheme();
-        Log.d(TAG, "Uri scheme: " + inputUriScheme);
         if ("content".equals(inputUriScheme)) {
             try {
                 copyFile(mInputUri, mOutputUri);
             } catch (NullPointerException | IOException e) {
-                Log.e(TAG, "Copying failed", e);
                 throw e;
             }
         } else if (!"file".equals(inputUriScheme)) {
-            Log.e(TAG, "Invalid Uri scheme " + inputUriScheme);
             throw new IllegalArgumentException("Invalid Uri scheme" + inputUriScheme);
         }
     }
 
     private void copyFile(@NonNull Uri inputUri, @Nullable Uri outputUri) throws NullPointerException, IOException {
-        Log.d(TAG, "copyFile");
-
         if (outputUri == null) {
             throw new NullPointerException("Output Uri is null - cannot copy image");
         }
@@ -167,7 +159,6 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
             if (inputStream == null) {
                 throw new NullPointerException("InputStream for given input Uri is null");
             }
-
             byte buffer[] = new byte[1024];
             int length;
             while ((length = inputStream.read(buffer)) > 0) {

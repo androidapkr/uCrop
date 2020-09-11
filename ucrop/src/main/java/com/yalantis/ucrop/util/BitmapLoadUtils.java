@@ -8,7 +8,6 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
@@ -18,8 +17,6 @@ import com.yalantis.ucrop.task.BitmapLoadTask;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -48,7 +45,7 @@ public class BitmapLoadUtils {
                 bitmap = converted;
             }
         } catch (OutOfMemoryError error) {
-            Log.e(TAG, "transformBitmap: ", error);
+            error.printStackTrace();
         }
         return bitmap;
     }
@@ -79,7 +76,7 @@ public class BitmapLoadUtils {
             orientation = new ImageHeaderParser(stream).getOrientation();
             close(stream);
         } catch (IOException e) {
-            Log.e(TAG, "getExifOrientation: " + imageUri.toString(), e);
+            e.printStackTrace();
         }
         return orientation;
     }
@@ -127,7 +124,6 @@ public class BitmapLoadUtils {
      *
      * @return - max bitmap size in pixels.
      */
-    @SuppressWarnings({"SuspiciousNameCombination", "deprecation"})
     public static int calculateMaxBitmapSize(@NonNull Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display;
@@ -158,7 +154,6 @@ public class BitmapLoadUtils {
             maxBitmapSize = Math.min(maxBitmapSize, maxTextureSize);
         }
 
-        Log.d(TAG, "maxBitmapSize: " + maxBitmapSize);
         return maxBitmapSize;
     }
 

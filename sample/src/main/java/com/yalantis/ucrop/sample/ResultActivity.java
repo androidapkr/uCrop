@@ -73,9 +73,9 @@ public class ResultActivity extends BaseActivity {
         }
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(new File(getIntent().getData().getPath()).getAbsolutePath(), options);
+        BitmapFactory.decodeFile(new File(uri.getPath()).getAbsolutePath(), options);
 
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        setSupportActionBar(findViewById(R.id.toolbar));
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);

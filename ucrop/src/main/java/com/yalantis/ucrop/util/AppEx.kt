@@ -18,7 +18,23 @@ fun AppCompatActivity.getResColor(color: Int): Int = ContextCompat.getColor(this
 
 fun Int.toPx(): Int = (this * Resources.getSystem().displayMetrics.density).toInt()
 
-fun Int.toPxInFloat(): Float = (this * Resources.getSystem().displayMetrics.density)
+fun AppCompatActivity.getStatusBarHeight(): Int {
+    var result = 0
+    val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+    if (resourceId > 0) {
+        result = resources.getDimensionPixelSize(resourceId)
+    }
+    return result
+}
+
+fun AppCompatActivity.getNavigationBarHeight(): Int {
+    var result = 0
+    val resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android")
+    if (resourceId > 0) {
+        result = resources.getDimensionPixelSize(resourceId)
+    }
+    return result
+}
 
 fun DoubleArray.resizeInRangeOf(mainWidth: Double, mainHeight: Double): DoubleArray = run {
 
@@ -58,13 +74,8 @@ fun String.checkLength80(): Boolean {
     return (this.length >= 2 && this.toInt() >= 80)
 }
 
-
 fun AppCompatActivity.getCenterSnapHorizontalLayoutManager(): SnappyLinearLayoutManager = run {
     return getCenterSnapLayoutManager(LinearLayoutManager.HORIZONTAL)
-}
-
-fun AppCompatActivity.getCenterSnapVerticalLayoutManager(): SnappyLinearLayoutManager = run {
-    return getCenterSnapLayoutManager(LinearLayoutManager.VERTICAL)
 }
 
 fun AppCompatActivity.getCenterSnapLayoutManager(orientation: Int): SnappyLinearLayoutManager = run {

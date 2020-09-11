@@ -24,7 +24,7 @@ public class SampleActivity extends BaseActivity {
     private static final String TAG = "SampleActivity";
     private static final String SAMPLE_CROPPED_IMAGE_NAME = "SampleCropImage";
 
-    private int requestMode = 1;
+    private int PICK_IMAGE_FROM_GALLERY = 1;
 
 
     @Override
@@ -38,8 +38,9 @@ public class SampleActivity extends BaseActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode == requestMode) {
+            if (requestCode == PICK_IMAGE_FROM_GALLERY) {
                 final Uri selectedUri = data.getData();
+                Log.d("_TAG_", "SampleActivity: 43 : " + selectedUri);
                 if (selectedUri != null) {
                     startCrop(selectedUri);
                 } else {
@@ -68,12 +69,12 @@ public class SampleActivity extends BaseActivity {
             intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         }
 
-        startActivityForResult(Intent.createChooser(intent, getString(R.string.label_select_picture)), requestMode);
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.label_select_picture)), PICK_IMAGE_FROM_GALLERY);
     }
 
     private void startCrop(@NonNull Uri uri) {
         String destinationFileName = SAMPLE_CROPPED_IMAGE_NAME;
-        destinationFileName += ".png";
+//        destinationFileName += ".png";
         destinationFileName += ".jpg";
 
         UCrop uCrop = UCrop.of(uri, Uri.fromFile(new File(getCacheDir(), destinationFileName)));
@@ -96,8 +97,8 @@ public class SampleActivity extends BaseActivity {
     private UCrop advancedConfig(@NonNull UCrop uCrop) {
         UCrop.Options options = new UCrop.Options();
 
-        options.setCompressionFormat(Bitmap.CompressFormat.PNG);
-//        options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
+//        options.setCompressionFormat(Bitmap.CompressFormat.PNG);
+        options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
         options.setCompressionQuality(100);
 
         options.setAspectRatioDefault(0f);

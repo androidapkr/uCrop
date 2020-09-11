@@ -31,15 +31,14 @@
 package com.yalantis.ucrop.util;
 
 import android.text.TextUtils;
-import android.util.Log;
+
+import androidx.exifinterface.media.ExifInterface;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
-
-import androidx.exifinterface.media.ExifInterface;
 
 /**
  * A class for parsing the exif orientation from an image header.
@@ -86,16 +85,10 @@ public class ImageHeaderParser {
         final int magicNumber = reader.getUInt16();
 
         if (!handles(magicNumber)) {
-            if (Log.isLoggable(TAG, Log.DEBUG)) {
-                Log.d(TAG, "Parser doesn't handle magic number: " + magicNumber);
-            }
             return UNKNOWN_ORIENTATION;
         } else {
             int exifSegmentLength = moveToExifSegmentAndGetLength();
             if (exifSegmentLength == -1) {
-                if (Log.isLoggable(TAG, Log.DEBUG)) {
-                    Log.d(TAG, "Failed to parse exif segment length, or exif segment not found");
-                }
                 return UNKNOWN_ORIENTATION;
             }
 
@@ -107,11 +100,6 @@ public class ImageHeaderParser {
     private int parseExifSegment(byte[] tempArray, int exifSegmentLength) throws IOException {
         int read = reader.read(tempArray, exifSegmentLength);
         if (read != exifSegmentLength) {
-            if (Log.isLoggable(TAG, Log.DEBUG)) {
-                Log.d(TAG, "Unable to read exif segment data"
-                        + ", length: " + exifSegmentLength
-                        + ", actually read: " + read);
-            }
             return UNKNOWN_ORIENTATION;
         }
 
@@ -119,9 +107,6 @@ public class ImageHeaderParser {
         if (hasJpegExifPreamble) {
             return parseExifSegment(new RandomAccessReader(tempArray, exifSegmentLength));
         } else {
-            if (Log.isLoggable(TAG, Log.DEBUG)) {
-                Log.d(TAG, "Missing jpeg exif preamble");
-            }
             return UNKNOWN_ORIENTATION;
         }
     }
@@ -150,9 +135,6 @@ public class ImageHeaderParser {
         while (true) {
             segmentId = reader.getUInt8();
             if (segmentId != SEGMENT_START_ID) {
-                if (Log.isLoggable(TAG, Log.DEBUG)) {
-                    Log.d(TAG, "Unknown segmentId=" + segmentId);
-                }
                 return -1;
             }
 
@@ -161,9 +143,6 @@ public class ImageHeaderParser {
             if (segmentType == SEGMENT_SOS) {
                 return -1;
             } else if (segmentType == MARKER_EOI) {
-                if (Log.isLoggable(TAG, Log.DEBUG)) {
-                    Log.d(TAG, "Found MARKER_EOI in exif segment");
-                }
                 return -1;
             }
 
@@ -173,12 +152,6 @@ public class ImageHeaderParser {
             if (segmentType != EXIF_SEGMENT_TYPE) {
                 long skipped = reader.skip(segmentLength);
                 if (skipped != segmentLength) {
-                    if (Log.isLoggable(TAG, Log.DEBUG)) {
-                        Log.d(TAG, "Unable to skip enough data"
-                                + ", type: " + segmentType
-                                + ", wanted to skip: " + segmentLength
-                                + ", but actually skipped: " + skipped);
-                    }
                     return -1;
                 }
             } else {
@@ -197,9 +170,6 @@ public class ImageHeaderParser {
         } else if (byteOrderIdentifier == INTEL_TIFF_MAGIC_NUMBER) {
             byteOrder = ByteOrder.LITTLE_ENDIAN;
         } else {
-            if (Log.isLoggable(TAG, Log.DEBUG)) {
-                Log.d(TAG, "Unknown endianness = " + byteOrderIdentifier);
-            }
             byteOrder = ByteOrder.BIG_ENDIAN;
         }
 
@@ -222,48 +192,30 @@ public class ImageHeaderParser {
 
             // 12 is max format code.
             if (formatCode < 1 || formatCode > 12) {
-                if (Log.isLoggable(TAG, Log.DEBUG)) {
-                    Log.d(TAG, "Got invalid format code = " + formatCode);
-                }
                 continue;
             }
 
             componentCount = segmentData.getInt32(tagOffset + 4);
 
             if (componentCount < 0) {
-                if (Log.isLoggable(TAG, Log.DEBUG)) {
-                    Log.d(TAG, "Negative tiff component count");
-                }
                 continue;
             }
 
-            if (Log.isLoggable(TAG, Log.DEBUG)) {
-                Log.d(TAG, "Got tagIndex=" + i + " tagType=" + tagType + " formatCode=" + formatCode
-                        + " componentCount=" + componentCount);
-            }
 
             final int byteCount = componentCount + BYTES_PER_FORMAT[formatCode];
 
             if (byteCount > 4) {
-                if (Log.isLoggable(TAG, Log.DEBUG)) {
-                    Log.d(TAG, "Got byte count > 4, not orientation, continuing, formatCode=" + formatCode);
-                }
                 continue;
             }
 
             final int tagValueOffset = tagOffset + 8;
 
             if (tagValueOffset < 0 || tagValueOffset > segmentData.length()) {
-                if (Log.isLoggable(TAG, Log.DEBUG)) {
-                    Log.d(TAG, "Illegal tagValueOffset=" + tagValueOffset + " tagType=" + tagType);
-                }
                 continue;
             }
 
             if (byteCount < 0 || tagValueOffset + byteCount > segmentData.length()) {
-                if (Log.isLoggable(TAG, Log.DEBUG)) {
-                    Log.d(TAG, "Illegal number of bytes for TI tag data tagType=" + tagType);
-                }
+
                 continue;
             }
 
@@ -418,7 +370,7 @@ public class ImageHeaderParser {
             newExif.saveAttributes();
 
         } catch (IOException e) {
-            Log.d(TAG, e.getMessage());
+            e.printStackTrace();
         }
     }
 

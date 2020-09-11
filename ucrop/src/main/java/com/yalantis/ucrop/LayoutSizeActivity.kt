@@ -1,15 +1,19 @@
 package com.yalantis.ucrop
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Animatable
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.view.animation.AccelerateInterpolator
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -22,11 +26,8 @@ import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.callback.OnSnapPositionChangeListener
 import com.yalantis.ucrop.callback.SizeLayoutSnapOnScrollListener
 import com.yalantis.ucrop.callback.attachSizeLayoutSnapHelperWithListener
+import com.yalantis.ucrop.util.*
 import com.yalantis.ucrop.util.BitmapLoadUtils.calculateMaxBitmapSize
-import com.yalantis.ucrop.util.PREFIX_X
-import com.yalantis.ucrop.util.getCenterSnapHorizontalLayoutManager
-import com.yalantis.ucrop.util.getResColor
-import com.yalantis.ucrop.util.toPx
 import com.yalantis.ucrop.view.CropImageView
 import com.yalantis.ucrop.view.GestureCropImageView
 import com.yalantis.ucrop.view.OverlayView
@@ -61,9 +62,36 @@ open class LayoutSizeActivity : AppCompatActivity(), LayoutSizeAdapter.OnLayoutS
 
     private var mBlockingView: FrameLayout? = null
 
+    private fun setWindowFlag(activity: Activity, bits: Int, on: Boolean) {
+
+        val win: Window = activity.window
+
+        val winParams: WindowManager.LayoutParams = win.attributes
+        if (on) {
+            winParams.flags = winParams.flags or bits
+        } else {
+            winParams.flags = winParams.flags and bits.inv()
+        }
+        win.attributes = winParams
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//        if (Build.VERSION.SDK_INT in 19..20)
+//            setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, true)
+//        if (Build.VERSION.SDK_INT >= 19)
+//            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//        if (Build.VERSION.SDK_INT >= 21) {
+//            setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, true)
+//            window.statusBarColor = Color.TRANSPARENT
+//            window.navigationBarColor = Color.TRANSPARENT
+//        }
+//        android:fitsSystemWindows="false"
+
         setContentView(R.layout.activity_layout_size)
+
+//        (app_bar_layout.layoutParams as ConstraintLayout.LayoutParams).topMargin = getStatusBarHeight()
+//        (recyclerViewSize.layoutParams as ConstraintLayout.LayoutParams).bottomMargin = getNavigationBarHeight()
 
         if (mCropView.viewTreeObserver.isAlive) {
             mCropView.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener1 {
@@ -178,6 +206,12 @@ open class LayoutSizeActivity : AppCompatActivity(), LayoutSizeAdapter.OnLayoutS
         mRootViewBackgroundColor = intent.getIntExtra(UCrop.Options.EXTRA_UCROP_ROOT_VIEW_BACKGROUND_COLOR, getResColor(R.color.ucrop_color_crop_background))
         mRootViewBackgroundSurfaceColor = intent.getIntExtra(UCrop.Options.EXTRA_UCROP_ROOT_VIEW_BACKGROUND_COLOR, getResColor(R.color.ucrop_color_crop_background))
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setBackgroundDrawable(ColorDrawable(mRootViewBackgroundColor))
+            window.statusBarColor = mRootViewBackgroundColor
+            window.navigationBarColor = mRootViewBackgroundColor
+        }
+
         // Bitmap compression options
         var compressFormat: Bitmap.CompressFormat? = null
         intent.getStringExtra(UCrop.Options.EXTRA_COMPRESSION_FORMAT_NAME)?.let {
@@ -238,6 +272,8 @@ open class LayoutSizeActivity : AppCompatActivity(), LayoutSizeAdapter.OnLayoutS
             }
         })
         rotateScrollWheel2.setMiddleLineColor(mActiveControlsWidgetColor)
+        rotateScrollWheel2.setLineColor(mInActiveControlsWidgetColor)
+
         materialButtonReset2.setOnClickListener {
             mGestureCropImageView.postRotate(-mGestureCropImageView.currentAngle)
             mGestureCropImageView.setImageToWrapCropBounds()
